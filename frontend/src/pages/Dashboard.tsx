@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
-import { FaCamera, FaChartLine, FaBars, FaSignOutAlt, FaCoins } from 'react-icons/fa';
+import { FaCamera, FaChartLine, FaBars, FaSignOutAlt, FaCoins, FaHistory } from 'react-icons/fa';
 import { useUser, useClerk } from '@clerk/clerk-react'; 
 import { logo, hair } from '../assets/index';
 import styles from '../styles/DashboardStyles';
@@ -92,6 +92,13 @@ const Dashboard: React.FC = () => {
             >
               <FaCamera className={styles.navIcon} />
               <span className={styles.navText}>Take Photo</span>
+            </Link>
+            <Link
+              to="/dashboard/history"
+              className={`${styles.navLink} ${location.pathname === '/dashboard/history' ? styles.activeLink : ''}`}
+            >
+              <FaHistory className={styles.navIcon} />
+              <span className={styles.navText}>History</span>
             </Link>
           </nav>
 
