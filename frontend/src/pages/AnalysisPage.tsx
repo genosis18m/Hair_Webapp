@@ -1,5 +1,6 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { prof, tube1, tube2, tube3, tube4, tube5 } from '../assets/index';
+import { prof, tube1, tube2, tube4, tube5 } from '../assets/index';
 
 import styles from '../styles/AnalysisPageStyles'; // Import styles
 

@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
 import { alibaba, amazon, jumia } from '../../assets/index';
 import styles from '../../styles/ImageUploaderStyles';
 import UpgradeCard from '../UpgradeCard';
@@ -25,7 +24,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     setIsCameraView
 }) => {
 
-    const navigate = useNavigate();
     const [showModel, setShowModel] = useState(false);
     const [selectedWebsite, setSelectedWebsite] = useState<string | null>(null);
     const [credits, setCredits] = useState(150);
@@ -40,7 +38,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             setImageSrc(reader.result as string);
             classifyImage(file)
 
-            setCredits(prev => Math.max(prev - 25));
+            setCredits(prev => Math.max(prev - 25, 0));
         };
         reader.readAsDataURL(file);
     };
@@ -90,11 +88,15 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             {imageSrc ? (
                 <img src={imageSrc} alt='Capured' className={styles.image} />
             ) : (
-                <img 
-                    src="https://ecamp[le.com"
-                    alt= "Take a Photo"
-                    className={styles.image}
-                />
+                <div className="w-full h-64 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl mb-6 flex items-center justify-center">
+                  <div className="text-center text-gray-400">
+                    <svg className="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <p>No photo yet</p>
+                  </div>
+                </div>
             )}
             <h2 className={styles.title}>Take a Photo</h2>
             <p className={styles.description}>We'll use this to analyze and return predictions from the AI model</p>
@@ -115,7 +117,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                     <input
                         id="fileInput" 
                         type="file"
-                        accept="image/png, image.jpeg, image/jpg"
+                        accept="image/png, image/jpeg, image/jpg"
                         onChange={(event) => {
                             const file = event.target.files?.[0];
                             if (file) handleFileChange(file);

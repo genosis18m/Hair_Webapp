@@ -1,20 +1,19 @@
 // ImageUploaderStyles.ts
 const styles = {
-    container: "bg-white rounded-lg shadow-lg p-6 w-full max-w-md text-center",
-    image: "w-full h-56 object-cover rounded-md mb-4 shadow-lg",
-    title: "text-3xl font-bold mb-2 text-black",
-    description: "text-gray-600 mb-6",
-    credits: "text-gray-800 mb-4",
-    button: "bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 focus:outline-none transform hover:scale-110 transition-all duration-300 mb-2",
-    analysisContainer: "mt-4 bg-gray-100 p-4 rounded-lg shadow-md",
-    analysisTitle: "text-lg font-bold text-pink-700",
-    analysisItem: "text-gray-800",
-    modalContainer: "fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50",
-    modalContent: "bg-white rounded-lg p-12 w-full max-w-xl h-auto mx-auto shadow-lg",
-    modalTitle: "text-lg font-bold mb-4",
-    websiteButton: "flex items-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600",
-    websiteButtonAlibaba: "flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700",
+    container: "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 w-full max-w-md text-center border border-gray-100 animate-fadeIn",
+    image: "w-full h-64 object-cover rounded-xl mb-6 shadow-lg ring-2 ring-gray-100",
+    title: "text-3xl font-bold mb-3 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent",
+    description: "text-gray-500 mb-6 leading-relaxed",
+    credits: "text-green-600 font-semibold mb-6 bg-green-50 inline-block px-4 py-1 rounded-full",
+    button: "bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-3 rounded-xl hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-4 focus:ring-green-200 transform hover:scale-105 hover:shadow-lg transition-all duration-300 mb-3 font-medium",
+    analysisContainer: "mt-6 bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl shadow-md border border-green-100 animate-slideIn",
+    analysisTitle: "text-xl font-bold text-green-700 mb-3",
+    analysisItem: "text-gray-700 py-1 border-b border-green-100 last:border-0",
+    modalContainer: "fixed inset-0 flex items-center justify-center z-50 bg-black/60 backdrop-blur-sm animate-fadeIn",
+    modalContent: "bg-white rounded-2xl p-8 w-full max-w-md mx-4 shadow-2xl transform animate-slideIn",
+    modalTitle: "text-xl font-bold mb-6 text-gray-800",
+    websiteButton: "flex items-center justify-center space-x-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:shadow-lg hover:scale-102",
+    websiteButtonAlibaba: "flex items-center justify-center space-x-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 hover:shadow-lg",
   };
   
   export default styles;
-  
