@@ -1,15 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
-import { FaHome, FaCamera, FaChartLine, FaHistory, FaBars, FaSignOutAlt } from 'react-icons/fa';
-import { useUser, useClerk, SignedIn, SignedOut } from '@clerk/clerk-react'; 
+import { FaCamera, FaChartLine, FaBars, FaSignOutAlt, FaCoins } from 'react-icons/fa';
+import { useUser, useClerk } from '@clerk/clerk-react'; 
 import { logo, hair } from '../assets/index';
-import styles from '../styles/DashboardStyles'; 
+import styles from '../styles/DashboardStyles';
+import { useUserData } from '../hooks/useUserData';
 
 const Dashboard: React.FC = () => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
+  const { credits, loading: userDataLoading } = useUserData();
   const [showSidebar, setShowSidebar] = useState(false);
   const [showCard, setShowCard] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -95,7 +97,12 @@ const Dashboard: React.FC = () => {
 
           {/* Sidebar Footer with User Information */}
           <div className={styles.sidebarFooter}>
-            <p className={styles.credits}>(Credits: 50)</p>
+            <div className="flex items-center gap-2 mb-3">
+              <FaCoins className="text-yellow-500" />
+              <span className={styles.credits}>
+                {userDataLoading ? '...' : credits} Credits
+              </span>
+            </div>
             <div onClick={toggleCard} className={styles.avatarContainer}>
               <img
                 src={user?.imageUrl || hair}
@@ -126,9 +133,15 @@ const Dashboard: React.FC = () => {
                   <p className={styles.cardUserEmail}>{user?.primaryEmailAddress?.emailAddress || "user@example.com"}</p>
                 </div>
               </div>
+              <div className="border-t border-gray-100 pt-3 mt-2">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-gray-600 text-sm">Credits</span>
+                  <span className="font-bold text-green-600">{credits}</span>
+                </div>
+              </div>
               <button 
                 onClick={handleSignOut}
-                className="mt-3 w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-colors duration-200"
+                className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-colors duration-200"
               >
                 <FaSignOutAlt />
                 Sign Out
