@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User profile synced with Clerk
+model User {
+  id            String   @id @default(cuid())
+  clerkId       String   @unique
+  email         String   @unique
+  name          String?
+  imageUrl      String?
+  credits       Int      @default(50)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  analyses      Analysis[]
+  subscription  Subscription?
+}
+
+// Hair analysis results
+model Analysis {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  imageUrl      String?
+  predictions   Json     // Store prediction results as JSON
+  topResult     String   // The highest probability result
+  confidence    Float    // Confidence percentage
+  
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+}
+
+// Subscription/Payment tracking
+model Subscription {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  stripeCustomerId  String?  @unique
+  stripePriceId     String?
+  stripeSubscriptionId String? @unique
+  
+  plan              String   @default("free") // free, basic, premium
+  status            String   @default("active") // active, cancelled, past_due
+  
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
