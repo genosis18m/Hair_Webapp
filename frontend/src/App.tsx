@@ -1,15 +1,11 @@
 import React from 'react';
-import { ClerkProvider, SignedIn, SignedOut, SignUp, SignIn } from '@clerk/clerk-react';
+import { SignedIn, SignedOut, SignUp, SignIn } from '@clerk/clerk-react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PhotoPage from './pages/PhotoPage/PhotoPage';
 import AnalysisPage from './pages/AnalysisPage';
 import HistoryPage from './pages/HistoryPage';
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
-
-
-// Using Vite environment variables for Clerk API key
-const clerkFrontendApi = import.meta.env.VITE_CLERK_FRONTEND_API;
 
 const App: React.FC = () => {
   return (
