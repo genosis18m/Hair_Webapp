@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import * as tmImage from '@teachablemachine/image';
 import CameraCapturePage from './CameraCapture';
 import ImageUploader from './ImageUploader';
-import axios from 'axios';
 
 const PhotoPage: React.FC = () => {
   const [isCameraView, setIsCameraView] = useState(false);
@@ -10,10 +9,10 @@ const PhotoPage: React.FC = () => {
   const [predictions, setPredictions] = useState<any | null>(null);
   const [model, setModel] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [modelError, setModelError] = useState<string | null>(null);
 
   // TODO: Replace with your Teachable Machine model URL
-  // Get your model from: https://teachablemachine.withgoogle.com/
   const modelURL = 'https://teachablemachine.withgoogle.com/models/LNAvMinwT/model.json';
   const metadataURL = 'https://teachablemachine.withgoogle.com/models/LNAvMinwT/metadata.json';
 
@@ -41,6 +40,9 @@ const PhotoPage: React.FC = () => {
       return;
     }
 
+    setIsAnalyzing(true);
+    setPredictions(null);
+
     const image = document.createElement('img');
     image.src = URL.createObjectURL(file);
 
@@ -48,26 +50,10 @@ const PhotoPage: React.FC = () => {
       try {
         const prediction = await model.predict(image);
         setPredictions(prediction);
-
-        // Prepare data for API request
-        const predictionData = prediction.map((pred: any) => ({
-          className: pred.className,
-          probability: pred.probability
-        }));
-
-        // Send results to the backend (optional)
-        try {
-          const response = await axios.post('http://localhost:5000/api/classifications/classify', {
-            imageSrc,
-            predictions: predictionData
-          });
-          console.log('Data successfully sent to the backend:', response.data);
-        } catch (error) {
-          // Backend might not be running, that's okay for now
-          console.log('Backend not available, results shown locally only');
-        }
       } catch (error) {
         console.error('Error classifying image:', error);
+      } finally {
+        setIsAnalyzing(false);
       }
     };
   };
@@ -115,6 +101,7 @@ const PhotoPage: React.FC = () => {
             predictions={predictions}
             classifyImage={classifyImage}
             setIsCameraView={setIsCameraView}
+            isAnalyzing={isAnalyzing}
           />
         )}
       </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaCheckCircle, FaCrown, FaStar, FaRocket } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
@@ -6,6 +6,8 @@ import { useAuth } from '@clerk/clerk-react';
 const PaymentPlansSection: React.FC = () => {
   const navigate = useNavigate();
   const { isSignedIn } = useAuth();
+  const [showComingSoon, setShowComingSoon] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
   const plans = [
     {
@@ -22,6 +24,7 @@ const PaymentPlansSection: React.FC = () => {
       icon: FaStar,
       buttonText: 'Get Started Free',
       popular: false,
+      isFree: true,
     },
     {
       name: 'Pro',
@@ -38,6 +41,7 @@ const PaymentPlansSection: React.FC = () => {
       icon: FaCrown,
       buttonText: 'Upgrade to Pro',
       popular: true,
+      isFree: false,
     },
     {
       name: 'Unlimited',
@@ -55,19 +59,22 @@ const PaymentPlansSection: React.FC = () => {
       icon: FaRocket,
       buttonText: 'Go Unlimited',
       popular: false,
+      isFree: false,
     },
   ];
 
   const handlePlanClick = (plan: typeof plans[0]) => {
-    if (isSignedIn) {
-      if (plan.price === 0) {
+    if (plan.isFree) {
+      // Free plan - just navigate to dashboard
+      if (isSignedIn) {
         navigate('/dashboard/analysis');
       } else {
-        // TODO: Integrate with Stripe when key is available
-        navigate('/dashboard/analysis');
+        navigate('/signup');
       }
     } else {
-      navigate('/signup');
+      // Paid plans - show coming soon modal
+      setSelectedPlan(plan.name);
+      setShowComingSoon(true);
     }
   };
 
@@ -165,6 +172,49 @@ const PaymentPlansSection: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* Coming Soon Modal */}
+      {showComingSoon && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setShowComingSoon(false)}
+        >
+          <div 
+            className="bg-white rounded-2xl p-8 max-w-md w-full text-center animate-fadeIn shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-6xl mb-4">🚀</div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              {selectedPlan} Plan Coming Soon!
+            </h3>
+            <p className="text-gray-500 mb-6">
+              We're working hard to bring you the {selectedPlan} plan. 
+              In the meantime, enjoy our free tier with 50 credits!
+            </p>
+            <div className="space-y-3">
+              <button
+                onClick={() => {
+                  setShowComingSoon(false);
+                  if (isSignedIn) {
+                    navigate('/dashboard/analysis');
+                  } else {
+                    navigate('/signup');
+                  }
+                }}
+                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-colors"
+              >
+                Try Free Plan Instead
+              </button>
+              <button
+                onClick={() => setShowComingSoon(false)}
+                className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Maybe Later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

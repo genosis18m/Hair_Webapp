@@ -117,6 +117,15 @@ const Dashboard: React.FC = () => {
               <FaHistory className={styles.navIcon} />
               <span className={styles.navText}>History</span>
             </Link>
+            
+            {/* Logout Button */}
+            <button
+              onClick={handleSignOut}
+              className={`${styles.navLink} text-red-500 hover:bg-red-50 hover:text-red-600 mt-auto`}
+            >
+              <FaSignOutAlt className={styles.navIcon} />
+              <span className={styles.navText}>Logout</span>
+            </button>
           </nav>
 
           {/* Sidebar Footer with User Information */}
