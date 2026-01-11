@@ -107,7 +107,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                     setCredits(result.remainingCredits);
                     setAnalysisSaved(true);
                     setShowResults(true);
-                    showToast('Analysis complete! 1 credit used.', 'success');
+                    showToast('Analysis complete! 20 credits used.', 'success');
                 } catch (err: any) {
                     console.error('Error saving analysis:', err);
                     if (err.response?.status === 403) {

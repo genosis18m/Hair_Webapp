@@ -1,7 +1,8 @@
 // tailwind.config.js
 module.exports = {
+    darkMode: 'class',
     content: [
-      './src/**/*.{js,jsx,ts,tsx}', // Make sure all your src files are covered.
+      './src/**/*.{js,jsx,ts,tsx}',
     ],
     theme: {
       extend: {

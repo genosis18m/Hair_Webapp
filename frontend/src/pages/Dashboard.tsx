@@ -86,10 +86,10 @@ const Dashboard: React.FC = () => {
       {/* Sidebar */}
       {!isHomePage && (
         <aside className={`${styles.sidebar} ${showSidebar ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
-          <div className={styles.logoContainer}>
+          <Link to="/" className={`${styles.logoContainer} cursor-pointer hover:opacity-80 transition-opacity`}>
             <img src={logo} alt="Logo" className={styles.logoImage} />
             <span className={styles.logoText}>Hair Analysis</span>
-          </div>
+          </Link>
 
           {/* Navigation Links */}
           <nav className={styles.nav}>

@@ -112,9 +112,9 @@ app.post('/api/analyses', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Check credits
-    if (user.credits < 1) {
-      return res.status(403).json({ error: 'Insufficient credits' });
+    // Check credits (need 20 per analysis)
+    if (user.credits < 20) {
+      return res.status(403).json({ error: 'Insufficient credits. You need at least 20 credits.' });
     }
 
     // Find top prediction
@@ -122,7 +122,7 @@ app.post('/api/analyses', async (req, res) => {
       prev.probability > current.probability ? prev : current
     );
 
-    // Create analysis and deduct credit
+    // Create analysis and deduct 20 credits
     const [analysis] = await prisma.$transaction([
       prisma.analysis.create({
         data: {
@@ -135,7 +135,7 @@ app.post('/api/analyses', async (req, res) => {
       }),
       prisma.user.update({
         where: { id: user.id },
-        data: { credits: { decrement: 1 } },
+        data: { credits: { decrement: 20 } },
       }),
     ]);
 
