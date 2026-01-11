@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import styles from '../styles/NavbarStyles';
-import { logo }from '../assets/index';
+import { logo } from '../assets/index';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -12,43 +12,59 @@ const Navbar: React.FC = () => {
   const [isLogoLoaded, setIsLogoLoaded] = useState(true);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const closeMenu = () => setIsMenuOpen(false);
+
+  const scrollToSection = (sectionId: string) => {
+    closeMenu();
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
-        <Link to="/" className={styles.logo}>
+        <Link to="/" className={styles.logo} onClick={closeMenu}>
           {isLogoLoaded ? (
             <img 
               src={logo} 
-              alt="Beauty" 
+              alt="Hair Analysis" 
               onError={() => setIsLogoLoaded(false)} 
-              className="w-16 h-16 md:w-20 md:h-20" 
+              className="w-12 h-12 md:w-16 md:h-16" 
             />
           ) : (
-            "Beauty"
+            <span className="text-xl font-bold text-green-500">Hair Analysis</span>
           )}
         </Link>
 
+        {/* Mobile Menu Button */}
         <div className="md:hidden">
           <button onClick={toggleMenu} className={styles.toggleButton}>
-            {isMenuOpen ? <FaTimes /> : <FaBars />}
+            {isMenuOpen ? <FaTimes className="text-xl" /> : <FaBars className="text-xl" />}
           </button>
         </div>
 
-       
+        {/* Navigation Links */}
         <ul className={`${styles.navLinks} ${isMenuOpen ? styles.openMenu : styles.closedMenu}`}>
           <li>
-            <Link to="/" className={styles.link}>About</Link>
+            <button onClick={() => scrollToSection('features')} className={styles.link}>
+              Features
+            </button>
           </li>
           <li>
-            <Link to="/pricing" className={styles.link}>Pricing</Link>
+            <button onClick={() => scrollToSection('pricing')} className={styles.link}>
+              Pricing
+            </button>
           </li>
           <li>
-            <Link to="/about" className={styles.link}>About</Link>
+            <button onClick={() => scrollToSection('how-it-works')} className={styles.link}>
+              How It Works
+            </button>
           </li>
         </ul>
 
-        
+        {/* Action Buttons */}
         <div className={styles.actionButtons}>
           <button
             className={styles.getStartedButton}
@@ -60,7 +76,7 @@ const Navbar: React.FC = () => {
             className={styles.loginButton}
             onClick={() => isSignedIn ? navigate('/dashboard/analysis') : navigate('/login')}
           >
-            Login
+            {isSignedIn ? 'Dashboard' : 'Login'}
           </button>
         </div>
       </div>

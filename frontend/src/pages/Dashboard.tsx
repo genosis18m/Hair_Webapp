@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
-import { FaCamera, FaChartLine, FaBars, FaSignOutAlt, FaCoins, FaHistory } from 'react-icons/fa';
+import { FaCamera, FaChartLine, FaBars, FaSignOutAlt, FaCoins, FaHistory, FaTimes } from 'react-icons/fa';
 import { useUser, useClerk } from '@clerk/clerk-react'; 
 import { logo, hair } from '../assets/index';
 import styles from '../styles/DashboardStyles';
@@ -17,7 +17,13 @@ const Dashboard: React.FC = () => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const toggleSidebar = () => setShowSidebar(!showSidebar);
+  const closeSidebar = () => setShowSidebar(false);
   const toggleCard = () => setShowCard((prev) => !prev);
+
+  // Close sidebar when route changes
+  useEffect(() => {
+    setShowSidebar(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -59,14 +65,22 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      {/* Mobile Toggle Button */}
+      {/* Mobile Toggle Button - Fixed Header */}
       {!isHomePage && (
         <div className={styles.mobileToggle}>
           <span className={styles.mobileTitle}>Hair Analysis</span>
           <button onClick={toggleSidebar} className={styles.toggleButton}>
-            <FaBars className={styles.toggleIcon} />
+            {showSidebar ? <FaTimes className={styles.toggleIcon} /> : <FaBars className={styles.toggleIcon} />}
           </button>
         </div>
+      )}
+
+      {/* Mobile Backdrop */}
+      {!isHomePage && showSidebar && (
+        <div 
+          className={styles.sidebarBackdrop}
+          onClick={closeSidebar}
+        />
       )}
 
       {/* Sidebar */}
@@ -82,6 +96,7 @@ const Dashboard: React.FC = () => {
             <Link
               to="/dashboard/analysis"
               className={`${styles.navLink} ${location.pathname === '/dashboard/analysis' ? styles.activeLink : ''}`}
+              onClick={closeSidebar}
             >
               <FaChartLine className={styles.navIcon} />
               <span className={styles.navText}>Beauty</span>
@@ -89,6 +104,7 @@ const Dashboard: React.FC = () => {
             <Link
               to="/dashboard/photo"
               className={`${styles.navLink} ${location.pathname === '/dashboard/photo' ? styles.activeLink : ''}`}
+              onClick={closeSidebar}
             >
               <FaCamera className={styles.navIcon} />
               <span className={styles.navText}>Take Photo</span>
@@ -96,6 +112,7 @@ const Dashboard: React.FC = () => {
             <Link
               to="/dashboard/history"
               className={`${styles.navLink} ${location.pathname === '/dashboard/history' ? styles.activeLink : ''}`}
+              onClick={closeSidebar}
             >
               <FaHistory className={styles.navIcon} />
               <span className={styles.navText}>History</span>
@@ -148,7 +165,7 @@ const Dashboard: React.FC = () => {
               </div>
               <button 
                 onClick={handleSignOut}
-                className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-colors duration-200"
+                className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm"
               >
                 <FaSignOutAlt />
                 Sign Out
@@ -160,7 +177,7 @@ const Dashboard: React.FC = () => {
 
       {/* Main Content */}
       <div className={styles.mainContent}>
-        <Outlet /> {/* This is where different pages will be rendered */}
+        <Outlet />
       </div>
     </div>
   );
