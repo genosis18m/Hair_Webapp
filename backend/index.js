@@ -139,7 +139,7 @@ app.post('/api/analyses', async (req, res) => {
       }),
     ]);
 
-    res.json({ analysis, remainingCredits: user.credits - 1 });
+    res.json({ analysis, remainingCredits: user.credits - 20 });
   } catch (error) {
     console.error('Error saving analysis:', error);
     res.status(500).json({ error: 'Failed to save analysis' });
