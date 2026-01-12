@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
-import { FaCamera, FaChartLine, FaBars, FaSignOutAlt, FaCoins, FaHistory, FaTimes } from 'react-icons/fa';
+import { FaCamera, FaChartLine, FaBars, FaSignOutAlt, FaCoins, FaHistory, FaTimes, FaMoon, FaSun } from 'react-icons/fa';
 import { useUser, useClerk } from '@clerk/clerk-react'; 
 import { logo, hair } from '../assets/index';
 import styles from '../styles/DashboardStyles';
 import { useUserData } from '../hooks/useUserData';
+import { useTheme } from '../context/ThemeContext';
 
 const Dashboard: React.FC = () => {
   const location = useLocation();
@@ -12,6 +13,7 @@ const Dashboard: React.FC = () => {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
   const { credits, loading: userDataLoading } = useUserData();
+  const { isDarkMode, toggleDarkMode } = useTheme();
   const [showSidebar, setShowSidebar] = useState(false);
   const [showCard, setShowCard] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -117,6 +119,15 @@ const Dashboard: React.FC = () => {
               <FaHistory className={styles.navIcon} />
               <span className={styles.navText}>History</span>
             </Link>
+            
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={toggleDarkMode}
+              className={`${styles.navLink} hover:bg-gray-100 dark:hover:bg-gray-700`}
+            >
+              {isDarkMode ? <FaSun className={`${styles.navIcon} text-yellow-500`} /> : <FaMoon className={`${styles.navIcon} text-gray-500`} />}
+              <span className={styles.navText}>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+            </button>
             
             {/* Logout Button */}
             <button
