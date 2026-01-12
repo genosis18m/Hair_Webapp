@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { styles } from '../../styles/CameraCaptureStyles';
 
 const CameraCapturePage: React.FC<{
@@ -8,7 +8,7 @@ const CameraCapturePage: React.FC<{
 }> = ({ setImageSrc, setIsCameraView, classifyImage }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [, setIsCameraOpen] = useState(false);
 
   const openCamera = async () => {
     try {
