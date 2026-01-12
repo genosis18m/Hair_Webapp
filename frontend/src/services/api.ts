@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// In production, use relative path (same domain), in dev use localhost
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -63,7 +64,7 @@ export const paymentApi = {
     planCurrency?: string;
     clerkId: string;
   }) => {
-    const response = await api.post('/create-checkout-session', data);
+    const response = await api.post('/api/create-checkout-session', data);
     return response.data;
   },
 
@@ -76,7 +77,7 @@ export const paymentApi = {
 
 // Health check
 export const healthCheck = async () => {
-  const response = await api.get('/health');
+  const response = await api.get('/api/health');
   return response.data;
 };
 
