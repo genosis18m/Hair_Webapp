@@ -7,10 +7,14 @@ import HistoryPage from './pages/HistoryPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
+import DarkModeToggle from './components/DarkModeToggle';
 
 const App: React.FC = () => {
   return (
     <Router>
+      {/* Floating Dark Mode Toggle - Top Right */}
+      <DarkModeToggle />
+      
       <Routes>
         {/* Home page */}
         <Route index element={<Home />} />
@@ -22,7 +26,7 @@ const App: React.FC = () => {
               <Navigate to="/dashboard/analysis" replace />
             </SignedIn>
             <SignedOut>
-              <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+              <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
                 <SignIn />
               </div>
             </SignedOut>
@@ -31,7 +35,7 @@ const App: React.FC = () => {
         
         {/* Signup route */}
         <Route path="/signup" element={
-          <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+          <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
             <SignUp />
           </div>
         } />

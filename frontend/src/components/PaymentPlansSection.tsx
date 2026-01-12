@@ -2,17 +2,21 @@ import React, { useState } from 'react';
 import { FaCheckCircle, FaCrown, FaStar, FaRocket } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
+import axios from 'axios';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const PaymentPlansSection: React.FC = () => {
   const navigate = useNavigate();
   const { isSignedIn } = useAuth();
-  const [showComingSoon, setShowComingSoon] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [loading, setLoading] = useState<string | null>(null);
 
   const plans = [
     {
       name: 'Starter',
       price: 0,
+      priceDisplay: 'Free',
       credits: 50,
       description: "Perfect for trying out AI hair analysis. Get started for free!",
       features: [
@@ -28,7 +32,8 @@ const PaymentPlansSection: React.FC = () => {
     },
     {
       name: 'Pro',
-      price: 9.99,
+      price: 14900, // in paisa for Stripe
+      priceDisplay: '₹149',
       credits: 200,
       description: "Most popular for regular users who want consistent hair care insights.",
       features: [
@@ -45,7 +50,8 @@ const PaymentPlansSection: React.FC = () => {
     },
     {
       name: 'Unlimited',
-      price: 19.99,
+      price: 29900, // in paisa for Stripe
+      priceDisplay: '₹299',
       credits: 'Unlimited',
       description: "For professionals and hair care enthusiasts who need unlimited access.",
       features: [
@@ -63,7 +69,7 @@ const PaymentPlansSection: React.FC = () => {
     },
   ];
 
-  const handlePlanClick = (plan: typeof plans[0]) => {
+  const handlePlanClick = async (plan: typeof plans[0]) => {
     if (plan.isFree) {
       // Free plan - just navigate to dashboard
       if (isSignedIn) {
@@ -71,10 +77,37 @@ const PaymentPlansSection: React.FC = () => {
       } else {
         navigate('/signup');
       }
-    } else {
-      // Paid plans - show coming soon modal
-      setSelectedPlan(plan.name);
-      setShowComingSoon(true);
+      return;
+    }
+
+    // Paid plans - redirect to Stripe checkout
+    setLoading(plan.name);
+    
+    try {
+      const stripe = await stripePromise;
+      if (!stripe) {
+        alert('Payment system is loading. Please try again.');
+        setLoading(null);
+        return;
+      }
+
+      const response = await axios.post('http://localhost:5000/create-checkout-session', {
+        planId: plan.name,
+        planAmount: plan.price,
+        planCurrency: 'inr',
+      });
+
+      if (response.data && response.data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = response.data.url;
+      } else {
+        alert('Failed to start checkout. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      alert('Payment service unavailable. Please try again later.');
+    } finally {
+      setLoading(null);
     }
   };
 
@@ -126,14 +159,10 @@ const PaymentPlansSection: React.FC = () => {
                 
                 {/* Price */}
                 <div className="mb-6">
-                  {plan.price === 0 ? (
-                    <p className="text-5xl font-bold text-gray-800">Free</p>
-                  ) : (
-                    <p className="text-5xl font-bold text-gray-800">
-                      ${plan.price}
-                      <span className="text-lg text-gray-500 font-normal">/month</span>
-                    </p>
-                  )}
+                  <p className="text-5xl font-bold text-gray-800">
+                    {plan.priceDisplay}
+                    {!plan.isFree && <span className="text-lg text-gray-500 font-normal">/month</span>}
+                  </p>
                   <p className="text-green-600 font-medium mt-1">
                     {typeof plan.credits === 'number' ? `${plan.credits} credits` : plan.credits}
                   </p>
@@ -151,14 +180,22 @@ const PaymentPlansSection: React.FC = () => {
 
                 {/* Button */}
                 <button
-                  className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 ${
+                  className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center ${
                     plan.popular
                       ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 shadow-lg hover:shadow-xl'
                       : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                  }`}
+                  } ${loading === plan.name ? 'opacity-70 cursor-not-allowed' : ''}`}
                   onClick={() => handlePlanClick(plan)}
+                  disabled={loading === plan.name}
                 >
-                  {plan.buttonText}
+                  {loading === plan.name ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
+                      Processing...
+                    </>
+                  ) : (
+                    plan.buttonText
+                  )}
                 </button>
               </div>
             );
@@ -172,49 +209,6 @@ const PaymentPlansSection: React.FC = () => {
           </p>
         </div>
       </div>
-
-      {/* Coming Soon Modal */}
-      {showComingSoon && (
-        <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          onClick={() => setShowComingSoon(false)}
-        >
-          <div 
-            className="bg-white rounded-2xl p-8 max-w-md w-full text-center animate-fadeIn shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="text-6xl mb-4">🚀</div>
-            <h3 className="text-2xl font-bold text-gray-800 mb-2">
-              {selectedPlan} Plan Coming Soon!
-            </h3>
-            <p className="text-gray-500 mb-6">
-              We're working hard to bring you the {selectedPlan} plan. 
-              In the meantime, enjoy our free tier with 50 credits!
-            </p>
-            <div className="space-y-3">
-              <button
-                onClick={() => {
-                  setShowComingSoon(false);
-                  if (isSignedIn) {
-                    navigate('/dashboard/analysis');
-                  } else {
-                    navigate('/signup');
-                  }
-                }}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-colors"
-              >
-                Try Free Plan Instead
-              </button>
-              <button
-                onClick={() => setShowComingSoon(false)}
-                className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
-              >
-                Maybe Later
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 };
