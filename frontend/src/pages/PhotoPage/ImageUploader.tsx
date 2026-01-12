@@ -94,7 +94,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             setLoading(true);
             setShowResults(false);
             
-            // Add delay for legitimacy
+            // Add delay for legitimacy (5 seconds)
             const timer = setTimeout(async () => {
                 try {
                     // Save to database
@@ -119,7 +119,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                 } finally {
                     setLoading(false);
                 }
-            }, 2500); // 2.5 second delay for legitimacy
+            }, 5000); // 5 second delay for legitimacy
 
             return () => clearTimeout(timer);
         }

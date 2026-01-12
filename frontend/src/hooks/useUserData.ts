@@ -28,9 +28,9 @@ export const useUserData = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Sync user with backend
+  // Sync user with backend (create if not exists)
   const syncUser = useCallback(async () => {
-    if (!user) return;
+    if (!user) return null;
 
     try {
       const result = await userApi.syncUser({
@@ -41,9 +41,11 @@ export const useUserData = () => {
       });
       setUserData(result.user);
       setError(null);
+      return result.user;
     } catch (err) {
       console.error('Error syncing user:', err);
       setError('Failed to sync user data');
+      return null;
     }
   }, [user]);
 
@@ -57,8 +59,9 @@ export const useUserData = () => {
       setUserData(result.user);
       setError(null);
     } catch (err: any) {
-      // If user not found, sync them
+      // If user not found (404), sync/create them
       if (err.response?.status === 404) {
+        console.log('User not found, syncing...');
         await syncUser();
       } else {
         console.error('Error fetching user:', err);
@@ -87,6 +90,17 @@ export const useUserData = () => {
       setLoading(false);
       setUserData(null);
     }
+  }, [isLoaded, user, fetchUserData]);
+
+  // Refresh credits every 10 seconds while on dashboard pages
+  useEffect(() => {
+    if (!isLoaded || !user) return;
+    
+    const interval = setInterval(() => {
+      fetchUserData();
+    }, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(interval);
   }, [isLoaded, user, fetchUserData]);
 
   return {
