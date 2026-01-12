@@ -20,10 +20,10 @@ const PaymentPlansSection: React.FC = () => {
       credits: 50,
       description: "Perfect for trying out AI hair analysis. Get started for free!",
       features: [
-        "50 free analysis credits",
+        "50 free credits (2-3 analyses)",
+        "20 credits per analysis",
         "Basic hair type detection",
-        "Product recommendations",
-        "Analysis history (7 days)"
+        "Product recommendations"
       ],
       icon: FaStar,
       buttonText: 'Get Started Free',

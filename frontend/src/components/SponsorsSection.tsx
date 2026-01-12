@@ -1,13 +1,17 @@
 import React from 'react';
+import hairluxLogo from '../assets/sponsors/hairlux.png';
+import vitalstrandsLogo from '../assets/sponsors/vitalstrands.png';
+import silkrootLogo from '../assets/sponsors/silkroot.png';
+import maneglowLogo from '../assets/sponsors/maneglow.png';
+import purefollicleLogo from '../assets/sponsors/purefollicle.png';
 
 const SponsorsSection: React.FC = () => {
-  // Made-up hair care companies with their "logos" as text/initials
   const sponsors = [
-    { name: 'HairLux', initials: 'HL', color: 'from-purple-500 to-pink-500' },
-    { name: 'VitalStrands', initials: 'VS', color: 'from-green-500 to-emerald-500' },
-    { name: 'SilkRoot', initials: 'SR', color: 'from-orange-500 to-red-500' },
-    { name: 'ManeGlow', initials: 'MG', color: 'from-blue-500 to-cyan-500' },
-    { name: 'PureFollicle', initials: 'PF', color: 'from-yellow-500 to-orange-500' },
+    { name: 'HairLux', logo: hairluxLogo },
+    { name: 'VitalStrands', logo: vitalstrandsLogo },
+    { name: 'SilkRoot', logo: silkrootLogo },
+    { name: 'ManeGlow', logo: maneglowLogo },
+    { name: 'PureFollicle', logo: purefollicleLogo },
   ];
 
   const reviewers = [
@@ -49,14 +53,12 @@ const SponsorsSection: React.FC = () => {
           </p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
             {sponsors.map((sponsor) => (
-              <div key={sponsor.name} className="flex items-center gap-3 group cursor-pointer">
-                {/* Logo circle with gradient */}
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${sponsor.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                  <span className="text-white font-bold text-lg">{sponsor.initials}</span>
-                </div>
-                <span className="text-gray-700 dark:text-gray-300 font-semibold group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
-                  {sponsor.name}
-                </span>
+              <div key={sponsor.name} className="group cursor-pointer">
+                <img 
+                  src={sponsor.logo} 
+                  alt={sponsor.name}
+                  className="h-16 md:h-20 w-auto object-contain grayscale hover:grayscale-0 opacity-70 hover:opacity-100 transition-all duration-300 group-hover:scale-110"
+                />
               </div>
             ))}
           </div>
